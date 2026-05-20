@@ -219,3 +219,163 @@ export const deleteMember = async (docId) => {
     throw error;
   }
 };
+
+// ==========================================
+// Staff Authentication & Management CRUD
+// ==========================================
+
+const getStaffCollection = () => {
+  const database = getDb();
+  return collection(database, 'staff');
+};
+
+/**
+ * Seed default admin if staff collection is completely empty
+ */
+export const seedDefaultAdmin = async () => {
+  try {
+    const colRef = getStaffCollection();
+    const snapshot = await getDocs(colRef);
+    if (snapshot.empty) {
+      console.log("Seeding default admin account...");
+      const payload = {
+        email: "admin@hrgym.com",
+        name: "Administrator",
+        password: "admin123", // plaintext password for simple gym validation
+        role: "admin",
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      };
+      await addDoc(colRef, payload);
+    }
+  } catch (error) {
+    console.warn("Auto-seeding admin failed (database may be uninitialized):", error);
+  }
+};
+
+/**
+ * Authenticate a user by email and password
+ */
+export const authenticateUser = async (email, password) => {
+  try {
+    // Run seed check first to ensure database has at least the default admin account
+    await seedDefaultAdmin();
+
+    const colRef = getStaffCollection();
+    const cleanEmail = email.trim().toLowerCase();
+    
+    // Find matching email
+    const q = query(colRef, where('email', '==', cleanEmail), limit(1));
+    const snapshot = await getDocs(q);
+    
+    if (snapshot.empty) {
+      throw new Error("User account not found");
+    }
+    
+    const userDoc = snapshot.docs[0];
+    const userData = userDoc.data();
+    
+    if (userData.password !== password) {
+      throw new Error("Incorrect password");
+    }
+    
+    return {
+      docId: userDoc.id,
+      email: userData.email,
+      name: userData.name,
+      role: userData.role
+    };
+  } catch (error) {
+    console.error("Authentication failed:", error);
+    throw error;
+  }
+};
+
+/**
+ * Retrieve all staff users (Admin only)
+ */
+export const getStaffUsers = async () => {
+  try {
+    const colRef = getStaffCollection();
+    const q = query(colRef, orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(docSnap => ({
+      docId: docSnap.id,
+      ...docSnap.data()
+    }));
+  } catch (error) {
+    console.error("Firestore getStaffUsers failed:", error);
+    throw error;
+  }
+};
+
+/**
+ * Add a new staff user (Admin only)
+ */
+export const addStaffUser = async (staffData) => {
+  try {
+    const colRef = getStaffCollection();
+    
+    // Check if email already exists
+    const cleanEmail = staffData.email.trim().toLowerCase();
+    const q = query(colRef, where('email', '==', cleanEmail), limit(1));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      throw new Error("Email already registered to another staff member");
+    }
+
+    const payload = {
+      email: cleanEmail,
+      name: staffData.name.trim(),
+      password: staffData.password.trim(),
+      role: staffData.role || "staff", // "staff" or "admin"
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    const docRef = await addDoc(colRef, payload);
+    return { docId: docRef.id, ...payload };
+  } catch (error) {
+    console.error("Firestore addStaffUser failed:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update staff details (Admin only)
+ */
+export const updateStaffUser = async (docId, staffData) => {
+  try {
+    const dbInstance = getDb();
+    const docRef = doc(dbInstance, 'staff', docId);
+    
+    const payload = {
+      email: staffData.email.trim().toLowerCase(),
+      name: staffData.name.trim(),
+      password: staffData.password.trim(),
+      role: staffData.role || "staff",
+      updatedAt: serverTimestamp()
+    };
+    
+    await updateDoc(docRef, payload);
+    return { docId, ...payload };
+  } catch (error) {
+    console.error("Firestore updateStaffUser failed:", error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a staff user (Admin only)
+ */
+export const deleteStaffUser = async (docId) => {
+  try {
+    const dbInstance = getDb();
+    const docRef = doc(dbInstance, 'staff', docId);
+    await deleteDoc(docRef);
+    return docId;
+  } catch (error) {
+    console.error("Firestore deleteStaffUser failed:", error);
+    throw error;
+  }
+};
