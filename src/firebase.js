@@ -239,7 +239,7 @@ export const seedDefaultAdmin = async () => {
     if (snapshot.empty) {
       console.log("Seeding default admin account...");
       const payload = {
-        email: "clienttracking168@gmail.com",
+        email: "adminhr@gym.com",
         name: "Administrator",
         password: "admin123", // plaintext password for simple gym validation
         role: "admin",

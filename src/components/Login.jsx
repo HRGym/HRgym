@@ -114,7 +114,7 @@ export default function Login({ onLoginSuccess }) {
               <input
                 type="email"
                 className="form-input"
-                placeholder="e.g. clienttracking168@gmail.com"
+                placeholder="e.g. adminhr@gym.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{ paddingLeft: '2.5rem' }}
@@ -212,7 +212,7 @@ export default function Login({ onLoginSuccess }) {
         </form>
 
         <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
-          <p>Default Admin: <strong>clienttracking168@gmail.com</strong> / <strong>admin123</strong></p>
+          <p>Default Admin: <strong>adminhr@gym.com</strong> / <strong>admin123</strong></p>
           <p style={{ marginTop: '4px' }}>Please update default credentials inside the admin dashboard.</p>
         </div>
 
