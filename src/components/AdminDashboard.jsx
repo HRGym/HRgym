@@ -453,7 +453,7 @@ export default function AdminDashboard({ onLogout }) {
                 <thead>
                   <tr>
                     <th>ឈ្មោះ / Full Name</th>
-                    <th>អီးម៉ែល / Email Address</th>
+                    <th>អ៊ីមែល / Email Address</th>
                     <th>លេខសម្ងាត់ / Password</th>
                     <th>តួនាទី / Role</th>
                     <th style={{ width: '120px', textAlign: 'center' }}>សកម្មភាព / Actions</th>

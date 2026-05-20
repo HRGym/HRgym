@@ -109,7 +109,7 @@ export default function Login({ onLoginSuccess }) {
         <form onSubmit={handleSubmit}>
           {/* Email Input */}
           <div className="form-group">
-            <label className="form-label">အီးម៉ែល / Email Address</label>
+            <label className="form-label">អ៊ីមែល / Email Address</label>
             <div style={{ position: 'relative' }}>
               <input
                 type="email"

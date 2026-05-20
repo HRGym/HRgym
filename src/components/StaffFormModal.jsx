@@ -64,7 +64,7 @@ export default function StaffFormModal({ isOpen, onClose, staffUser, onSave }) {
     } catch (err) {
       console.error("StaffFormModal save failed:", err);
       if (err.message.includes("already registered")) {
-        setErrorMsg("អီးម៉ែលនេះត្រូវបានប្រើប្រាស់រួចហើយ / Email already registered");
+        setErrorMsg("អ៊ីមែលនេះត្រូវបានប្រើប្រាស់រួចហើយ / Email already registered");
       } else {
         setErrorMsg("រក្សាទុកបរាជ័យ។ សូមព្យាយាមម្តងទៀត / Failed to save. Try again.");
       }
@@ -120,7 +120,7 @@ export default function StaffFormModal({ isOpen, onClose, staffUser, onSave }) {
 
             {/* Email */}
             <div className="form-group">
-              <label className="form-label">អီးម៉ែល / Email Address</label>
+              <label className="form-label">អ៊ីមែល / Email Address</label>
               <input
                 type="email"
                 name="email"
