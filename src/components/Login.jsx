@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { authenticateUser } from '../firebase';
 import { LogIn, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
@@ -8,6 +8,20 @@ export default function Login({ onLoginSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Load remembered credentials on mount
+  useEffect(() => {
+    const savedEmail = localStorage.getItem('remembered_email');
+    const savedPassword = localStorage.getItem('remembered_password');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+    if (savedPassword) {
+      setPassword(savedPassword);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +35,15 @@ export default function Login({ onLoginSuccess }) {
 
     try {
       const user = await authenticateUser(email, password);
+      
+      if (rememberMe) {
+        localStorage.setItem('remembered_email', email);
+        localStorage.setItem('remembered_password', password);
+      } else {
+        localStorage.removeItem('remembered_email');
+        localStorage.removeItem('remembered_password');
+      }
+
       // Pass the authenticated user credentials up
       onLoginSuccess(user);
     } catch (err) {
@@ -102,7 +125,7 @@ export default function Login({ onLoginSuccess }) {
           </div>
 
           {/* Password Input */}
-          <div className="form-group" style={{ marginBottom: '2rem' }}>
+          <div className="form-group" style={{ marginBottom: '1.25rem' }}>
             <label className="form-label">លេខសម្ងាត់ / Password</label>
             <div style={{ position: 'relative' }}>
               <input
@@ -134,6 +157,38 @@ export default function Login({ onLoginSuccess }) {
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+          </div>
+
+          {/* Remember Me Checkbox */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '1.5rem',
+            fontSize: '0.85rem',
+            userSelect: 'none'
+          }}>
+            <label style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              cursor: 'pointer',
+              color: 'var(--text-muted)',
+              fontFamily: 'Kantumruy Pro, sans-serif'
+            }}>
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                style={{
+                  width: '16px',
+                  height: '16px',
+                  accentColor: 'var(--primary)',
+                  cursor: 'pointer',
+                  borderRadius: '4px'
+                }}
+              />
+              ចងចាំគណនី និងលេខសម្ងាត់ / Remember Me
+            </label>
           </div>
 
           <button 
