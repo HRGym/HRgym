@@ -54,7 +54,7 @@ export default function Login({ onLoginSuccess }) {
       } else if (err.message.includes("password")) {
         setErrorMsg("លេខសម្ងាត់មិនត្រឹមត្រូវ / Incorrect password");
       } else {
-        setErrorMsg("ការចូលប្រព័ន្ធបរាជ័យ។ សូមពិនិត្យការតភ្ជាប់ / Connection failed. Check settings.");
+        setErrorMsg(`ការចូលប្រព័ន្ធបរាជ័យ។ សូមពិនិត្យការតភ្ជាប់ / Connection failed: ${err.message || err.toString()}`);
       }
     } finally {
       setLoading(false);
