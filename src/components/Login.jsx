@@ -114,7 +114,7 @@ export default function Login({ onLoginSuccess }) {
               <input
                 type="email"
                 className="form-input"
-                placeholder="e.g. adminhr@gym.com"
+                placeholder="e.g. admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 style={{ paddingLeft: '2.5rem' }}
